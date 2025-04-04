@@ -1,8 +1,30 @@
+//! Audio utilities for the Silero VAD library
+//! 
+//! This module provides utility functions for reading and writing audio files,
+//! as well as processing audio chunks based on speech timestamps.
+
 use crate::{Error, Result};
 use ndarray::{Array1, s};
 use std::path::Path;
 
 /// Read audio from a WAV file
+/// 
+/// # Arguments
+/// 
+/// * `path` - Path to the WAV file
+/// * `sampling_rate` - Expected sampling rate of the audio
+/// 
+/// # Returns
+/// 
+/// Audio data as a 1D array of f32 samples
+/// 
+/// # Errors
+/// 
+/// Returns an error if:
+/// * The file cannot be opened
+/// * The file format is invalid
+/// * The sampling rate doesn't match
+/// * The audio data cannot be read
 pub fn read_audio<P: AsRef<Path>>(path: P, sampling_rate: u32) -> Result<Array1<f32>> {
     let mut reader = hound::WavReader::open(path).map_err(|e| Error::AudioProcessing(e.to_string()))?;
     
@@ -24,6 +46,19 @@ pub fn read_audio<P: AsRef<Path>>(path: P, sampling_rate: u32) -> Result<Array1<
 }
 
 /// Save audio to a WAV file
+/// 
+/// # Arguments
+/// 
+/// * `path` - Path to save the WAV file
+/// * `audio` - Audio data as a 1D array of f32 samples
+/// * `sampling_rate` - Sampling rate of the audio
+/// 
+/// # Errors
+/// 
+/// Returns an error if:
+/// * The file cannot be created
+/// * The audio data cannot be written
+/// * The WAV file cannot be finalized
 pub fn save_audio<P: AsRef<Path>>(path: P, audio: &Array1<f32>, sampling_rate: u32) -> Result<()> {
     let spec = hound::WavSpec {
         channels: 1,
@@ -50,6 +85,25 @@ pub fn save_audio<P: AsRef<Path>>(path: P, audio: &Array1<f32>, sampling_rate: u
 }
 
 /// Collect audio chunks based on speech timestamps
+/// 
+/// This function extracts audio segments corresponding to speech timestamps
+/// and concatenates them into a single audio array.
+/// 
+/// # Arguments
+/// 
+/// * `timestamps` - Speech timestamps to extract
+/// * `audio` - Complete audio data
+/// * `sampling_rate` - Sampling rate of the audio
+/// 
+/// # Returns
+/// 
+/// Concatenated audio segments as a 1D array
+/// 
+/// # Errors
+/// 
+/// Returns an error if:
+/// * Any timestamp is out of bounds
+/// * The audio data is invalid
 pub fn collect_chunks(
     timestamps: &[crate::vad::SpeechTimestamps],
     audio: &Array1<f32>,
@@ -78,6 +132,25 @@ pub fn collect_chunks(
 }
 
 /// Drop audio chunks based on speech timestamps
+/// 
+/// This function removes audio segments corresponding to speech timestamps
+/// and concatenates the remaining segments.
+/// 
+/// # Arguments
+/// 
+/// * `timestamps` - Speech timestamps to remove
+/// * `audio` - Complete audio data
+/// * `sampling_rate` - Sampling rate of the audio
+/// 
+/// # Returns
+/// 
+/// Audio with speech segments removed as a 1D array
+/// 
+/// # Errors
+/// 
+/// Returns an error if:
+/// * Any timestamp is out of bounds
+/// * The audio data is invalid
 pub fn drop_chunks(
     timestamps: &[crate::vad::SpeechTimestamps],
     audio: &Array1<f32>,

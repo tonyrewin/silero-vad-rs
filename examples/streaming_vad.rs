@@ -1,18 +1,17 @@
-use silero_vad::{SileroVAD, VADIterator};
+use silero_vad_rs::{SileroVAD, VADIterator};
 use ndarray::Array1;
 use std::path::Path;
 use std::time::Duration;
 use std::thread;
+use log::info;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    // Check if model exists, if not, download it
-    let model_path = Path::new("models/silero_vad.onnx");
-    if !model_path.exists() {
-        println!("Model not found. Please run 'make download-model' first.");
-        return Ok(());
-    }
+    // Initialize logging
+    env_logger::init();
 
-    // Load the model
+    // Load the model (will be downloaded automatically if not present)
+    info!("Loading VAD model...");
+    let model_path = Path::new("models/silero_vad.onnx");
     let model = SileroVAD::new(model_path)?;
     
     // Create a VAD iterator

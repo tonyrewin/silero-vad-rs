@@ -16,11 +16,6 @@ echo "Installing development dependencies..."
 rustup component add rustfmt
 rustup component add clippy
 
-# Download the model
-echo "Downloading Silero VAD ONNX model..."
-mkdir -p models
-curl -L -o models/silero_vad.onnx https://github.com/snakers4/silero-vad/raw/master/files/silero_vad_16k_op16.onnx
-
 # Build the project
 echo "Building the project..."
 cargo build

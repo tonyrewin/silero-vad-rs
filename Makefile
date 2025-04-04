@@ -1,4 +1,4 @@
-.PHONY: all build test clean doc format lint check bench run-example run-streaming download-model generate-test-audio
+.PHONY: all build test clean doc format lint check bench run-example run-streaming setup generate-test-audio
 
 # Default target
 all: build
@@ -43,20 +43,28 @@ bench:
 run-example:
 	cargo run --example basic_vad
 
+# Run basic example with debug logging
+run-example-debug:
+	RUST_LOG=debug cargo run --example basic_vad --release
+
 # Run streaming example
 run-streaming:
 	cargo run --example streaming_vad
+
+# Run streaming example with debug logging
+run-streaming-debug:
+	RUST_LOG=debug cargo run --example streaming_vad
+
+# Run streaming example in release mode
+run-streaming-release:
+	cargo run --example streaming_vad --release
 
 # Generate test audio
 generate-test-audio:
 	cargo run --example generate_test_audio
 
-# Download the ONNX model
-download-model:
-	@echo "Downloading Silero VAD ONNX model..."
-	@mkdir -p models
-	@curl -L -o models/silero_vad.onnx https://models.silero.ai/models/en/en_v6_xlarge.onnx
-	@echo "Model downloaded to models/silero_vad.onnx"
+# Setup the project (install dependencies and build)
+setup: install-dev-deps build generate-test-audio
 
 # Install development dependencies
 install-dev-deps:
