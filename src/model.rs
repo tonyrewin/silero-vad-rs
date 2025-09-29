@@ -194,7 +194,7 @@ impl SileroVAD {
 
         // Return speech probability
         let output_tensor = outputs[0].try_extract_tensor::<f32>()?;
-        Ok(Array1::from_vec(output_tensor.iter().cloned().collect::<Vec<f32>>()))
+        Ok(Array1::from_vec(output_tensor.1.iter().cloned().collect::<Vec<f32>>()))
     }
 
     /// Process a batch of audio chunks
@@ -263,6 +263,6 @@ impl SileroVAD {
 
         // Return speech probabilities
         let output_tensor = outputs[0].try_extract_tensor::<f32>()?;
-        Ok(Array1::from_vec(output_tensor.iter().cloned().collect::<Vec<f32>>()))
+        Ok(Array1::from_vec(output_tensor.1.iter().cloned().collect::<Vec<f32>>()))
     }
 } 
