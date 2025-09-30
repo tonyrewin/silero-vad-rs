@@ -7,7 +7,7 @@ license = "MIT"
 repository = "https://github.com/binarycrayon/silero-vad-rs"
 
 [dependencies]
-ort = { version = "=2.0.0-rc.10", features = ["ndarray", "cuda", "fetch-models"] }  # ONNX Runtime binding for Rust
+ort = { git = "https://github.com/tonyrewin/ort.git", branch = "main", features = ["ndarray", "fetch-models"], default-features = false }  # ONNX Runtime binding for Rust (Android-fixed fork)
 ndarray = "0.15.6"     # For numerical computations
 ndarray-stats = "0.5.1" # For statistical operations
 anyhow = "1.0.75"      # For error handling
